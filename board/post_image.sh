@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 ENV_TXT="$BR2_EXTERNAL"/env/env.txt
 OUTPUT="$BR2_EXTERNAL"/output
@@ -8,9 +9,12 @@ EXT4_IMAGE="$OUTPUT"/data.ext4
 MOUNTPOINT="$BASE_DIR"/superduperbird_data_mnt
 
 cleanup() {
+  echo "$0 failed"
   umount "$MOUNTPOINT" || /bin/true
   [ -f "$OUTPUT"/"$ENV_TXT" ] && rm "$OUTPUT"/"$ENV_TXT"
   [ -f "$EXT4_IMAGE" ] && rm "$EXT4_IMAGE"
+  rm "$EXT4_IMAGE" && mv "$EXT4_IMAGE".backup "$EXT4_IMAGE"
+  set +x
   return 1
 }
 
@@ -28,3 +32,5 @@ sudo tar -xf "$BINARIES_DIR"/rootfs.tar -C "$MOUNTPOINT" || cleanup
 sudo umount "$MOUNTPOINT"
 
 cp "$ENV_TXT" "$OUTPUT"/"$(basename $ENV_TXT)" || cleanup
+
+set +x
