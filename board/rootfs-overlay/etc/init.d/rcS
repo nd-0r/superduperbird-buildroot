@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Copied from superbird system_a/etc/init.d
+
+if [ -f /etc/init.d/rc.modules ]; then
+        /etc/init.d/rc.modules
+fi
+
+#Must run S02overlayfs first, as it will change /etc folder
+#then impact what kind /etc/init.d/* scripts need to run
+if [ -f /etc/init.d/S02overlayfs ]; then
+    /etc/init.d/S02overlayfs start
+fi
+
+
+# make sure user config directory is /var
+# / is read only, which can causes some application launch failed
+export XDG_CONFIG_HOME=/var
+#
+# launch dbus and set env
+#
+for i in `/usr/bin/dbus-launch | /bin/sed '/^#.*\|^$/d'`; do
+export $i
+done
+mkdir -p /tmp/dbus
+echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS > /tmp/dbus/dbus-addr
+echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID > /tmp/dbus/dbus-pid
+
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+for i in /etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     case "$i" in
+	*S02overlayfs)
+        continue
+        ;;
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+	    ;;
+    esac
+done
+

@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# usbgadget        Enables rndis over usb.
+#
+
+USBGADGET_SCRIPT="/opt/scripts/setup_usbgadget.sh"
+# Functions and constants in USBGADGET_SCRIPT
+source "$USBGADGET_SCRIPT"
+
+start() {
+	echo "### Configuring USB Gadget with rndis"
+	create_device "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200"
+	configure_device "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER" "Multi-Function Device"
+
+	add_function "rndis.usb0"  # rndis usb ethernet
+
+	attach_driver
+
+	configure_usbnet "usb0" "$USBNET_PREFIX" "255.255.255.0"
+
+	echo "Done setting up USB Gadget"
+
+	echo "OK"
+}
+stop() {
+	printf "Shutting down gadget: "
+
+	shutdown_gadget
+
+	echo "OK"
+}
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

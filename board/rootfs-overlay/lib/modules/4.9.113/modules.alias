@@ -1,0 +1,4 @@
+# Aliases extracted from modules themselves.
+alias fs-efivarfs efivarfs
+alias usb:v0A5Cp2033d*dc*dsc*dp*ic*isc*ip*in* bcm203x
+alias i2c:apple_mfi_auth apple_mfi_auth_i2c
