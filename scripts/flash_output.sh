@@ -14,4 +14,4 @@ fi
 
 UPDTOOL="$1"
 
-$UPDTOOL partition data output/data.ext4
+$UPDTOOL partition data ../output/data.ext4
