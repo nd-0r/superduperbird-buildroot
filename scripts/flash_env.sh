@@ -19,4 +19,4 @@ ENV_SIZE=`printf "0x%x" $(stat -c %s $ENV)`
 
 $UPDTOOL bulkcmd "amlmmc env"
 $UPDTOOL write $ENV $ENV_ADDR
-$UPDTOOL bulkcmd "env import -t $ENV_ADDR $ENV_SIZE"
+$UPDTOOL bulkcmd "env import -t $ENV_ADDR $ENV_SIZE; save; reset"

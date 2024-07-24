@@ -3,23 +3,35 @@
 set -e
 set -x
 
-ENV_TXT="$BR2_EXTERNAL"/env/env.txt
 OUTPUT="$BR2_EXTERNAL"/output
+ENV_TXT="$BR2_EXTERNAL"/board/env/env.txt
+ENV_OUT="$OUTPUT"/env.txt
 EXT4_IMAGE="$OUTPUT"/data.ext4
 MOUNTPOINT="$BASE_DIR"/superduperbird_data_mnt
+KERNEL_IMG="$BASE_DIR"/images/Image
+KERNEL_OUT="$OUTPUT"/kernel.img
+DTS="$BR2_EXTERNAL"/board/dt.dts
+DTB="$OUTPUT"/dt.dtb
 
 cleanup() {
   echo "$0 failed"
+
   umount "$MOUNTPOINT" || /bin/true
-  [ -f "$OUTPUT"/"$ENV_TXT" ] && rm "$OUTPUT"/"$ENV_TXT"
-  [ -f "$EXT4_IMAGE" ] && rm "$EXT4_IMAGE"
-  rm "$EXT4_IMAGE" && mv "$EXT4_IMAGE".backup "$EXT4_IMAGE"
+
+  # restore backups (if they exist)
+  for outfile in "$ENV_OUT" "$EXT4_IMAGE" "$KERNEL_OUT" "$DTB"; do
+    [ -f "$outfile" ] && rm "$outfile" && (mv "$outfile".backup "$outfile" || true)
+  done
+
   set +x
+
   return 1
 }
 
-[ -f "$OUTPUT"/"$ENV_TXT" ] && mv -f "$OUTPUT"/"$ENV_TXT" "$OUTPUT"/"$ENV_TXT".backup
-[ -f "$EXT4_IMAGE" ] && mv -f "$EXT4_IMAGE" "$EXT4_IMAGE".backup
+# make backups
+for outfile in "$ENV_OUT" "$EXT4_IMAGE" "$KERNEL_OUT" "$DTB"; do
+  [ -f "$outfile" ] && mv -f "$outfile" "$outfile".backup
+done
 
 trap cleanup INT
 
@@ -32,5 +44,9 @@ sudo tar -xf "$BINARIES_DIR"/rootfs.tar -C "$MOUNTPOINT" || cleanup
 sudo umount "$MOUNTPOINT"
 
 cp "$ENV_TXT" "$OUTPUT"/"$(basename $ENV_TXT)" || cleanup
+
+cp "$KERNEL_IMG" "$KERNEL_OUT" || cleanup
+
+dtc -I dts -O dtb -o "$DTB" "$DTS" || cleanup
 
 set +x
