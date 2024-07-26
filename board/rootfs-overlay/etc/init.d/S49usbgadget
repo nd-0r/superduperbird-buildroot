@@ -30,7 +30,7 @@ SERIAL_NUMBER="12345678"
 ID_VENDOR="0x18d1"
 ID_PRODUCT="0x4e40"
 MANUFACTURER="Spotify"
-PRODUCT="Superduperbird Ethernet and RNDIS Gadget"
+PRODUCT="Superduperbird"
 
 
 # Research
@@ -116,65 +116,64 @@ shutdown_gadget() {
         NUM_CONFIGS="$1"
         echo "$UDC_DEVICE" > /sys/kernel/config/usb_gadget/g1/UDC
         for i in $(seq 1 "$NUM_CONFIGS"); do
-	        find "/sys/kernel/config/usb_gadget/g1/configs/c.${i}" -type l -exec unlink {} \;
-	        rm -r "/sys/kernel/config/usb_gadget/g1/configs/c.${i}/strings/0x409"
-	        rm -r "/sys/kernel/config/usb_gadget/g1/configs/c.${i}"
-	      done
+                find "/sys/kernel/config/usb_gadget/g1/configs/c.${i}" -type l -exec unlink {} \;
+                rm -r "/sys/kernel/config/usb_gadget/g1/configs/c.${i}/strings/0x409"
+                rm -r "/sys/kernel/config/usb_gadget/g1/configs/c.${i}"
+              done
         rm -r /sys/kernel/config/usb_gadget/g1/strings/0x409
         rm -r /sys/kernel/config/usb_gadget/g1/functions/*
         rm -r /sys/kernel/config/usb_gadget/g1/
 }
 
 start() {
-	echo "### Configuring USB Gadget with Ethernet and RNDIS"
-	create_device "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
-	add_config "Multi-Function USB Gadget" "1"
+        echo "### Configuring USB Gadget with Ethernet and RNDIS"
+        create_gadget "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
+        add_config "Multi-Function Device"
 
-	add_function "rndis.usb0" "1"  # rndis usb ethernet (must be first to get `usb0`)
-	add_function "eem.usb1" "1" # eem usb ethernet (must be second to get `usb1`)
-	add_function "acm.usb0" "1"  # acm usb serial
+        add_function "rndis.usb0"  # rndis usb ethernet (must be first to get `usb0`)
+        # add_function "eem.usb1" # eem usb ethernet (must be second to get `usb1`)
+        # add_function "acm.usb0"  # acm usb serial
 
-	attach_driver
+        attach_driver
 
-	# Interface names are assigned pattern `usb%d` by default. As far as I can tell,
-	#  there is not a way to hardcode the index, so this relies on the kernel choosing
-	#  `usb0` first and `usb1` second.
-	# Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
-	configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0"
-	configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
+        # Interface names are assigned pattern `usb%d` by default. As far as I can tell,
+        #  there is not a way to hardcode the index, so this relies on the kernel choosing
+        #  `usb0` first and `usb1` second.
+        # Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
+        configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0"
+        # configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
 
-	echo "Done setting up USB Gadget"
+        echo "Done setting up USB Gadget"
 
-	echo "OK"
+        echo "OK"
 }
 
 stop() {
-	printf "Shutting down gadget: "
+        printf "Shutting down gadget: "
 
-	shutdown_gadget "1"
+        shutdown_gadget "1"
 
-	echo "OK"
+        echo "OK"
 }
 
 restart() {
-	stop
-	start
+        stop
+        start
 }
 
 case "$1" in
   start)
-	start
-	;;
+        start
+        ;;
   stop)
-	stop
-	;;
+        stop
+        ;;
   restart|reload)
-	restart
-	;;
+        restart
+        ;;
   *)
-	echo "Usage: $0 {start|stop|restart}"
-	exit 1
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
 esac
 
 exit $?
-
