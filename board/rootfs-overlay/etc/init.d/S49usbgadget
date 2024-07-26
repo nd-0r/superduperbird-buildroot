@@ -100,11 +100,12 @@ configure_usbnet() {
         DEVICE="$1"
         NETWORK="$2"  # just the first 3 octets
         NETMASK="$3"
+        DEFAULT="$4"
         echo "###  bringing up $DEVICE with ${NETWORK}.2"
         ifconfig "$DEVICE" up
         ifconfig "$DEVICE" "${NETWORK}.2" netmask "$NETMASK" broadcast "${NETWORK}.255"
         echo "adding routes for $DEVICE"
-        ip route add default via "${NETWORK}.1" dev "$DEVICE"
+        ip route add "$DEFAULT" via "${NETWORK}.1" dev "$DEVICE"
         echo "making sure you have a dns server"
         echo "nameserver 1.1.1.1" > /etc/resolv.conf
         sleep 1
@@ -126,13 +127,16 @@ shutdown_gadget() {
 }
 
 start() {
+        mkdir /config
+        mount -t ext4 -o rw /dev/settings /config
+        {
         echo "### Configuring USB Gadget with Ethernet and RNDIS"
         create_gadget "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
         add_config "Multi-Function Device"
 
         add_function "rndis.usb0"  # rndis usb ethernet (must be first to get `usb0`)
-        # add_function "eem.usb1" # eem usb ethernet (must be second to get `usb1`)
-        # add_function "acm.usb0"  # acm usb serial
+        add_function "eem.usb1" # eem usb ethernet (must be second to get `usb1`)
+        add_function "acm.usb0"  # acm usb serial
 
         attach_driver
 
@@ -140,12 +144,14 @@ start() {
         #  there is not a way to hardcode the index, so this relies on the kernel choosing
         #  `usb0` first and `usb1` second.
         # Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
-        configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0"
-        # configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
+        configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0" default
+        configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
 
         echo "Done setting up USB Gadget"
 
         echo "OK"
+        } > /config/stdout.log 2>/config/stderr.log
+        sync
 }
 
 stop() {
