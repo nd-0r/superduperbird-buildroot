@@ -36,7 +36,7 @@ done
 trap cleanup INT
 
 # Based on the size of the data dump, 2G appears to be safe
-dd if=/dev/zero of="$EXT4_IMAGE" bs=1M count=2048 || cleanup
+dd if=/dev/zero of="$EXT4_IMAGE" bs=1M count=64 || cleanup
 mkfs.ext4 "$EXT4_IMAGE" || cleanup
 mkdir "$MOUNTPOINT" || /bin/true
 sudo mount -t ext4 -o loop "$EXT4_IMAGE" "$MOUNTPOINT" || cleanup
