@@ -23,14 +23,14 @@
 
 ######### Variables
 
-USBNET_RNDIS_PREFIX="192.168.6"
-USBNET_EEM_PREFIX="192.168.7"
+USBNET_RNDIS_PREFIX="192.168.7"
+USBNET_EEM_PREFIX="192.168.6"
 SERIAL_NUMBER="12345678"
 # 18d1:4e40 Google Inc. Nexus 7
 ID_VENDOR="0x18d1"
 ID_PRODUCT="0x4e40"
 MANUFACTURER="Spotify"
-PRODUCT="Superduperbird Ethernet/RNDIS Gadget"
+PRODUCT="Superduperbird Ethernet and RNDIS Gadget"
 
 
 # Research
@@ -43,7 +43,7 @@ PRODUCT="Superduperbird Ethernet/RNDIS Gadget"
 
 ######### Functions
 
-create_device() {
+create_gadget() {
         # create usb gadget device
         ID_VEND="$1"
         ID_PROD="$2"
@@ -52,7 +52,7 @@ create_device() {
         MANUF="$5"
         PROD="$6"
         SERIAL="$7"
-        echo "###  Creating device $ID_VEND $ID_PROD"
+        echo "###  Creating gadget $ID_VEND $ID_PROD"
 
         mountpoint /sys/kernel/config/ || mount -t configfs none "/sys/kernel/config/"
         mkdir -p "/sys/kernel/config/usb_gadget/g1"
@@ -72,22 +72,20 @@ create_device() {
 add_config() {
         # configure usb gadget device
         CONFIG_NAME="$1"
-        CONFIG_IDX="$2"
-        mkdir -p "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}"
-        mkdir -p "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}/strings/0x409"
-        echo "$CONFIG_NAME" > "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}/strings/0x409/configuration"
-        echo 100 > "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}/MaxPower"
-        ln -s "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}" "/sys/kernel/config/usb_gadget/g1/os_desc/c.${CONFIG_IDX}"
+        mkdir -p "/sys/kernel/config/usb_gadget/g1/configs/c.1"
+        mkdir -p "/sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409"
+        echo "$CONFIG_NAME" > "/sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409/configuration"
+        echo 500 > "/sys/kernel/config/usb_gadget/g1/configs/c.1/MaxPower"
+        ln -s "/sys/kernel/config/usb_gadget/g1/configs/c.1" "/sys/kernel/config/usb_gadget/g1/os_desc/c.1"
         sleep 1
 }
 
 add_function() {
         # add a function to existing config id
         FUNCTION_NAME="$1"
-        CONFIG_IDX="$2"
-        echo "###  adding function $FUNCTION_NAME to config c.${CONFIG_IDX}"
+        echo "###  adding function $FUNCTION_NAME to config c.1"
         mkdir -p "/sys/kernel/config/usb_gadget/g1/functions/${FUNCTION_NAME}"
-        ln -s "/sys/kernel/config/usb_gadget/g1/functions/${FUNCTION_NAME}" "/sys/kernel/config/usb_gadget/g1/configs/c.${CONFIG_IDX}"
+        ln -s "/sys/kernel/config/usb_gadget/g1/functions/${FUNCTION_NAME}" "/sys/kernel/config/usb_gadget/g1/configs/c.1"
 }
 
 attach_driver() {
@@ -130,14 +128,18 @@ shutdown_gadget() {
 start() {
 	echo "### Configuring USB Gadget with Ethernet and RNDIS"
 	create_device "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
-	add_config "RNDIS" "1"
-	add_config "EEM" "2"
+	add_config "Multi-Function USB Gadget" "1"
 
-	add_function "rndis.usb0" "1"  # rndis usb ethernet
-	add_function "eem.usb1" "2" # rndis usb ethernet
+	add_function "rndis.usb0" "1"  # rndis usb ethernet (must be first to get `usb0`)
+	add_function "eem.usb1" "1" # eem usb ethernet (must be second to get `usb1`)
+	add_function "acm.usb0" "1"  # acm usb serial
 
 	attach_driver
 
+	# Interface names are assigned pattern `usb%d` by default. As far as I can tell,
+	#  there is not a way to hardcode the index, so this relies on the kernel choosing
+	#  `usb0` first and `usb1` second.
+	# Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
 	configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0"
 	configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
 
@@ -149,7 +151,7 @@ start() {
 stop() {
 	printf "Shutting down gadget: "
 
-	shutdown_gadget "2"
+	shutdown_gadget "1"
 
 	echo "OK"
 }
