@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_SUPERDUPERBIRD_PATH/package/memory-game/Config.in"

@@ -1,0 +1,18 @@
+config BR2_PACKAGE_MEMORYGAME
+	bool "Memory game Slint POC"
+
+	depends on BR2_PACKAGE_HAS_UDEV
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS
+	depends on BR2_PACKAGE_HAS_LIBGBM
+
+	select BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_HOST_PKGCONF
+ 	select BR2_PACKAGE_HOST_RUSTC
+	select BR2_PACKAGE_LIBINPUT
+	select BR2_PACKAGE_LIBXKBCOMMON
+	select BR2_PACKAGE_FONTCONFIG
+
+	help
+	  A POC app for the Slint framework.
+
+	  https://github.com/nd-0r/slint-demo

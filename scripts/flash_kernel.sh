@@ -16,7 +16,7 @@ fi
 
 UPDTOOL="$1"
 
-$UPDTOOL partition boot_a ../output/kernel.img
+$UPDTOOL partition boot_b ../output/kernel.img
 
 # # Upload & boot kernel when U-Boot is in 'USB Burning' mode
 # DIR=$(dirname $(realpath $0))
