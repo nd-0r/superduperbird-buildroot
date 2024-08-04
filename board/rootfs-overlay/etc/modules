@@ -2,3 +2,6 @@ mali
 dwc3
 aml_thermal
 dwc_otg
+g_ether
+g_serial
+g_midi

@@ -6,7 +6,7 @@
 # Functions and constants in USBGADGET_SCRIPT
 # Originally written by bishopdynamics
 # Source: https://github.com/bishopdynamics/superbird-debian-kiosk/blob/main/files/data/scripts/setup_usbgad
-# I (nd-0r) just removed the adb functionality and added the EEM config
+# I (nd-0r) just removed the adb functionality and added the ACM config
 
 # Setup Linux USB Gadget for just rndis
 
@@ -24,7 +24,7 @@
 ######### Variables
 
 USBNET_RNDIS_PREFIX="192.168.7"
-USBNET_EEM_PREFIX="192.168.6"
+USBNET_ECM_PREFIX="192.168.6"
 SERIAL_NUMBER="12345678"
 # 18d1:4e40 Google Inc. Nexus 7
 ID_VENDOR="0x18d1"
@@ -130,13 +130,13 @@ start() {
         mkdir /config
         mount -t ext4 -o rw /dev/settings /config
         {
-        echo "### Configuring USB Gadget with Ethernet and RNDIS"
+        echo "### Configuring USB Gadget with ACM"
         create_gadget "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
-        add_config "Multi-Function Device"
+        add_config "Serial ACM Console"
 
-        add_function "rndis.usb0"  # rndis usb ethernet (must be first to get `usb0`)
-        add_function "eem.usb1" # eem usb ethernet (must be second to get `usb1`)
-        add_function "acm.usb0"  # acm usb serial
+        # add_function "rndis.usb0"  # rndis usb ethernet (must be first to get `usb0`)
+        # add_function "ncm.usb1" # ecm usb ethernet (must be second to get `usb1`)
+        add_function "acm.gs0"  # acm usb serial
 
         attach_driver
 
@@ -145,12 +145,13 @@ start() {
         #  `usb0` first and `usb1` second.
         # Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
         configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0" default
-        configure_usbnet "usb1" "$USBNET_EEM_PREFIX" "255.255.255.0"
+        # configure_usbnet "usb1" "$USBNET_ECM_PREFIX" "255.255.255.0"
 
         echo "Done setting up USB Gadget"
 
         echo "OK"
-        } > /config/stdout.log 2>/config/stderr.log
+        } > /config/S49usbgadget.log 2>&1
+        dmesg > /config/kernel.log
         sync
 }
 

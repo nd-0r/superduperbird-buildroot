@@ -1,8 +1,0 @@
-kernel/fs/efivarfs/efivarfs.ko:
-kernel/drivers/video/backlight/lcd.ko:
-kernel/drivers/bluetooth/bcm203x.ko:
-kernel/drivers/amlogic/ddr_tool/ddr_window.ko:
-kernel/net/bridge/br_netfilter.ko:
-extra/apple-mfi-auth.ko:
-extra/apple-mfi-auth-i2c.ko: extra/apple-mfi-auth.ko
-hardware/aml-4.9/arm/gpu//mali.ko:
