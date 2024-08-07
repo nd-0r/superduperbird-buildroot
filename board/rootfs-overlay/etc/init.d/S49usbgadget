@@ -1,36 +1,34 @@
 #!/bin/sh
 #
-# usbgadget        Enables rndis over usb.
+# usbgadget        Configures usb0 interface
 #
 
 # Functions and constants in USBGADGET_SCRIPT
 # Originally written by bishopdynamics
 # Source: https://github.com/bishopdynamics/superbird-debian-kiosk/blob/main/files/data/scripts/setup_usbgad
-# I (nd-0r) just removed the adb functionality and added the ACM config
-
-# Setup Linux USB Gadget for just rndis
-
-# Available options:
-
-# usb_f_rndis.ko
-# usb_f_fs.ko
-# usb_f_midi.ko
-# usb_f_mtp.ko
-# usb_f_ptp.ko
-# usb_f_audio_source.ko
-# usb_f_accessory.ko
-
+# I (nd-0r) got sick of the configfs interface and kept running into weird pitfalls while
+#   trying to configure CDC-ECM/RNDIS/ACM. So, I'm just using the g_ether module to 
+#   create a pre-configured CDC-ECM/RNDIS gadget and setting up the usb0 interface here.
+#
+# In particular, I noticed that setting up a gadget with CDC-EEM (!), RNDIS, and ACM worked
+#   on Linux, but not on MacOS. The interface would show up in the MacOS settings, but
+#   pings failed with "host is down". Changing to CDC-ECM (!), RNDIS, and ACM would fail
+#   when attaching the gadget to the UDC, maybe (?) because ACM can't be used with ECM, but
+#   I couldn't find the root cause of the -19 return code in the driver sources. I couldn't
+#   get NCM to work either.
+#
+# If you want to try to use configfs to do bigger and better things, maybe the commit
+#   history for this file would be helpful.
 
 ######### Variables
 
-USBNET_RNDIS_PREFIX="192.168.7"
-USBNET_ECM_PREFIX="192.168.6"
-SERIAL_NUMBER="12345678"
+USBNET_PREFIX="192.168.7"
+# SERIAL_NUMBER="12345678"
 # 18d1:4e40 Google Inc. Nexus 7
-ID_VENDOR="0x18d1"
-ID_PRODUCT="0x4e40"
-MANUFACTURER="Spotify"
-PRODUCT="Superduperbird"
+# ID_VENDOR="0x18d1"
+# ID_PRODUCT="0x4e40"
+# MANUFACTURER="Spotify"
+# PRODUCT="Superduperbird"
 
 
 # Research
@@ -101,13 +99,19 @@ configure_usbnet() {
         NETWORK="$2"  # just the first 3 octets
         NETMASK="$3"
         DEFAULT="$4"
+
         echo "###  bringing up $DEVICE with ${NETWORK}.2"
-        ifconfig "$DEVICE" up
-        ifconfig "$DEVICE" "${NETWORK}.2" netmask "$NETMASK" broadcast "${NETWORK}.255"
+        ip link set "$DEVICE" up
+        ip address add "${NETWORK}.2/24" dev "$DEVICE"
+        ip address add "169.254.1.1/16" dev "$DEVICE"
+
         echo "adding routes for $DEVICE"
-        ip route add "$DEFAULT" via "${NETWORK}.1" dev "$DEVICE"
+        ip route add "$DEFAULT" via "${NETWORK}.1" dev "$DEVICE" # IPv4 route
+        ip route add "169.254.0.0/16" dev "$DEVICE" # IPv4 link-local route for mDNS discovery
+
         echo "making sure you have a dns server"
         echo "nameserver 1.1.1.1" > /etc/resolv.conf
+
         sleep 1
 }
 
@@ -130,28 +134,25 @@ start() {
         mkdir /config
         mount -t ext4 -o rw /dev/settings /config
         {
-        echo "### Configuring USB Gadget with ACM"
-        create_gadget "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
-        add_config "Serial ACM Console"
+        echo "### Configuring usb0 network interface"
+        # create_gadget "$ID_VENDOR" "$ID_PRODUCT" "0x0223" "0x0200" "$MANUFACTURER" "$PRODUCT" "$SERIAL_NUMBER"
+        # add_config "Serial ACM Console"
 
         # add_function "rndis.usb0"  # rndis usb ethernet (must be first to get `usb0`)
-        # add_function "ncm.usb1" # ecm usb ethernet (must be second to get `usb1`)
-        add_function "acm.gs0"  # acm usb serial
+        # add_function "ecm.usb1" # ecm usb ethernet (must be second to get `usb1`)
+        # add_function "acm.gs0"  # acm usb serial
 
-        attach_driver
+        # attach_driver
 
-        # Interface names are assigned pattern `usb%d` by default. As far as I can tell,
-        #  there is not a way to hardcode the index, so this relies on the kernel choosing
-        #  `usb0` first and `usb1` second.
         # Source: https://www.kernel.org/doc/html/latest/usb/gadget-testing.html
-        configure_usbnet "usb0" "$USBNET_RNDIS_PREFIX" "255.255.255.0" default
+        configure_usbnet "usb0" "$USBNET_PREFIX" "255.255.255.0" default
         # configure_usbnet "usb1" "$USBNET_ECM_PREFIX" "255.255.255.0"
 
         echo "Done setting up USB Gadget"
 
         echo "OK"
         } > /config/S49usbgadget.log 2>&1
-        dmesg > /config/kernel.log
+        # dmesg > /config/kernel.log
         sync
 }
 
