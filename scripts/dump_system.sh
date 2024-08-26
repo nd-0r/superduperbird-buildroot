@@ -13,7 +13,5 @@ if [ $# -eq 0 ]; then
 fi
 
 UPDTOOL="$1"
-# SIZE="0x889EA000"
-# SIZE="0x20000000"
-SIZE="0x8000000"
-$UPDTOOL mread store data normal "$SIZE" "data.dump"
+SIZE="0x4000000"
+$UPDTOOL mread store system_b normal "$SIZE" "system.dump"

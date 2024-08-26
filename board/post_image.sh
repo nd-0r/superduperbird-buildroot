@@ -10,8 +10,7 @@ EXT4_IMAGE="$OUTPUT"/data.ext4
 MOUNTPOINT="$BASE_DIR"/superduperbird_data_mnt
 KERNEL_IMG="$BASE_DIR"/images/Image
 KERNEL_OUT="$OUTPUT"/kernel.img
-DTS="$BR2_EXTERNAL"/board/dt.dts
-DTB="$OUTPUT"/dt.dtb
+DTB_IMG="$BASE_DIR"/images/superbird_evt_512.dtb
 
 cleanup() {
   echo "$0 failed"
@@ -35,8 +34,10 @@ done
 
 trap cleanup INT
 
+notify.sh "Done building"
+
 # Based on the size of the data dump, 2G appears to be safe
-dd if=/dev/zero of="$EXT4_IMAGE" bs=1M count=256 || cleanup
+dd if=/dev/zero of="$EXT4_IMAGE" bs=1M count=512 || cleanup
 mkfs.ext4 "$EXT4_IMAGE" || cleanup
 mkdir "$MOUNTPOINT" || /bin/true
 sudo mount -t ext4 -o loop "$EXT4_IMAGE" "$MOUNTPOINT" || cleanup
@@ -47,6 +48,6 @@ cp "$ENV_TXT" "$OUTPUT"/"$(basename $ENV_TXT)" || cleanup
 
 cp "$KERNEL_IMG" "$KERNEL_OUT" || cleanup
 
-dtc -I dts -O dtb -o "$DTB" "$DTS" || cleanup
+cp "$DTB_IMG" "$OUTPUT" || cleanup
 
 set +x
