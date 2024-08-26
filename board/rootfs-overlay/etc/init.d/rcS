@@ -2,6 +2,11 @@
 
 # Copied from superbird system_a/etc/init.d
 
+mkdir /config
+mount -t ext4 -o rw /dev/settings /config
+echo "STARTING BUSYBOX" > /config/init.log
+sync
+{
 if [ -f /etc/init.d/rc.modules ]; then
         /etc/init.d/rc.modules
 fi
@@ -52,4 +57,6 @@ for i in /etc/init.d/S??* ;do
 	    ;;
     esac
 done
-
+} >> /config/init.log 2>&1
+dmesg > /config/kernel.log
+sync
