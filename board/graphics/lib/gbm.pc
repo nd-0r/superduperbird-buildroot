@@ -1,0 +1,9 @@
+prefix=/usr
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: gbm
+Description: gbm library
+Version: 13.0.0
+Libs: -L${libdir} -lgbm
+Cflags: -I${includedir}

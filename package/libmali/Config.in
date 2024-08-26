@@ -1,0 +1,36 @@
+menuconfig BR2_PACKAGE_LIBMALI
+	bool "libmali"
+	depends on !BR2_STATIC_LIBS
+	select BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_HAS_LIBGBM if !BR2_PACKAGE_LIBGLVND
+	select BR2_PACKAGE_LIBGBM_HAS_FEATURE_FORMAT_MODIFIER_PLANE_COUNT
+	select BR2_PACKAGE_LIBGBM_HAS_FEATURE_DMA_BUF
+	select BR2_PACKAGE_HAS_LIBEGL if !BR2_PACKAGE_LIBGLVND
+	select BR2_PACKAGE_LIBGLVND_DISPATCH_EGL if BR2_PACKAGE_LIBGLVND
+	select BR2_PACKAGE_HAS_LIBGLES if !BR2_PACKAGE_LIBGLVND
+	select BR2_PACKAGE_LIBGLVND_DISPATCH_GLES if BR2_PACKAGE_LIBGLVND
+	select BR2_PACKAGE_HAS_LIBEGL_WAYLAND
+	help
+	  Install GBM, EGL, and OpenGLES provided
+	    by `libMali.so` from
+		`https://github.com/vaxpl/arm-gpu-mali/tree/master`.
+
+	  Requires `mali.ko` kernel module to be
+	    installed and loaded.
+
+if BR2_PACKAGE_LIBMALI
+
+config BR2_PACKAGE_PROVIDES_LIBGBM
+	default "libmali"
+
+config BR2_PACKAGE_PROVIDES_LIBEGL
+	default "libmali" if !BR2_PACKAGE_LIBGLVND
+
+config BR2_PACKAGE_PROVIDES_LIBGLES
+	default "libmali" if !BR2_PACKAGE_LIBGLVND
+
+endif # BR2_PACKAGE_LIBMALI
+
+comment "libmali needs dynamic library"
+	depends on BR2_STATIC_LIBS
+

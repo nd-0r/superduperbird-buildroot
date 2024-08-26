@@ -1,1 +1,4 @@
 source "$BR2_EXTERNAL_SUPERDUPERBIRD_PATH/package/memory-game/Config.in"
+source "$BR2_EXTERNAL_SUPERDUPERBIRD_PATH/package/libmali/Config.in"
+source "$BR2_EXTERNAL_SUPERDUPERBIRD_PATH/package/wayland-old/Config.in"
+source "$BR2_EXTERNAL_SUPERDUPERBIRD_PATH/package/libffi-old/Config.in"
