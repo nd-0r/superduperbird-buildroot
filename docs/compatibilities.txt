@@ -1,147 +1,157 @@
-"amlogic, g12a"
-"arm,malit60x", "arm,malit6xx", "arm,mali-midgard"
-"arm,cortex-a53", "arm,armv8"
-"arm,cortex-a53", "arm,armv8"
-"arm,cortex-a53", "arm,armv8"
-"arm,cortex-a53", "arm,armv8"
-"arm,idle-state"
-"arm,armv8-timer"
-"arm, meson-bc-timer"
-"arm,armv8-pmuv3"
-"arm,cortex-a15-gic", "arm,cortex-a9-gic"
-"arm,psci-0.2"
-"amlogic, pm"
-"amlogic, secmon"
-"aml, securitykey"
-"amlogic, meson_mhu"
-"amlogic, iomap"
-"fixed-clock"
-"amlogic, aml_vrtc"
-"amlogic, cpuinfo"
-"aml, reboot"
-"amlogic, vpu-g12a"
-"amlogic, g12a-eth-dwmac", "snps,dwmac"
-"amlogic,meson-g12a-aobus-pinctrl"
-"amlogic,meson-g12a-periphs-pinctrl"
-"amlogic, audio_data"
-"synopsys, dwc3"
-"amlogic, amlogic-new-usb2-v2"
-"amlogic, amlogic-new-usb3-v2"
-"amlogic, dwc2"
-"amlogic, meson-wdt"
-"amlogic, ram_dump"
-"amlogic, jtag"
-"amlogic,meson-g12a-saradc"
-"amlogic, r1p1-tsensor"
-"amlogic, r1p1-tsensor"
-"simple-bus"
-"simple-bus"
-"amlogic,meson-gpio-intc-ext", "amlogic,meson-g12a-gpio-intc"
-"amlogic, gxl_measure"
-"amlogic,g12a-ee-pwm"
-"amlogic,g12a-ee-pwm"
-"amlogic,g12a-ee-pwm"
-"amlogic,meson-g12a-i2c"
-"tlsc6x,tlsc6x_ts"
-"amlogic,meson-g12a-i2c"
-"amlogic,meson-g12a-i2c"
-"st,lis2dh12-accel"
-"amstaos,tmd2772"
-"amlogic,meson-g12a-i2c"
-"apple_mfi_auth"
-"amlogic,meson-g12a-spicc"
-"amlogic,meson-g12a-spicc"
-"simple-bus"
-"amlogic,g12a-aoclkc"
-"amlogic,g12a-ao-pwm"
-"amlogic,g12a-ao-pwm"
-"amlogic,meson-g12a-i2c"
-"amlogic, meson-i2c-slave"
-"amlogic, meson-uart"
-"amlogic, meson-uart"
-"amlogic, meson_irblaster"
-"simple-bus"
-"simple-bus"
-"amlogic,g12a-clkc"
-"amlogic, ion_dev"
-"amlogic, audio-controller", "simple-bus"
-"amlogic, g12a-audio-clocks"
-"amlogic, g12a-audio-ddr-manager"
-"amlogic, g12a-snd-tdma"
-"amlogic, g12a-snd-pdm"
-"amlogic, snd-loopback"
-"amlogic, g12a-resample"
-"amlogic, meson-uart"
-"amlogic, meson-uart"
-"amlogic, meson-uart"
-"amlogic, vdin"
-"amlogic, vdin"
-"amlogic, vout"
-"amlogic, vout2"
-"amlogic, vdac-g12a"
-"amlogic, meson, canvas"
-"amlogic, ge2d-g12a"
-"amlogic, amvideom"
-"amlogic, codec_io"
-"amlogic, codec, streambuf"
-"amlogic, vdec"
-"amlogic, vcodec-dec"
-"amlogic, amvenc_avc"
-"cnm, HevcEnc"
-"amlogic, meson, rdma"
-"amlogic, meson-g12a"
-"amlogic, meson-mmc-g12a"
-"amlogic, meson-cooldev"
-"amlogic, snd-iomap"
-"pwm-regulator"
-"amlogic, ddr-bandwidth"
-"amlogic, dmc_monitor"
-"amlogic, defendkey"
-"amlogic,aml_txlx_dma"
-"amlogic,aes_g12a_dma"
-"amlogic,sha_dma"
-"amlogic,tdes_dma"
-"amlogic,meson-rng"
-"amlogic, efuse"
-"amlogic, cpu-major-id-g12a"
-"android,firmware"
-"android,vbmeta"
-"android,fstab"
-"android,system"
-"amlogic, lcd-g12a"
-"amlogic, lcd_extern"
-"amlogic, backlight-g12a"
-"amlogic, bl_extern"
-"ramoops"
-"shared-dma-pool"
-"amlogic, aml_secos_memory"
-"shared-dma-pool"
-"shared-dma-pool"
-"shared-dma-pool"
-"shared-dma-pool"
-"shared-dma-pool"
-"amlogic, codec-mm-reserved"
-"shared-dma-pool"
-"gpio-leds"
-"gpio-keys-polled"
-"rotary-encoder"
-"generic-adc-thermal"
-"generic-adc-thermal"
-"generic-adc-thermal"
-"brcm,bcm4345c0"
-"amlogic, cvbsout-g12a"
-"amlogic, codec, mm"
-"amlogic, ppmgr"
-"amlogic, deinterlace"
-"amlogic, ionvideo"
-"amlogic, vm"
-"amlogic, unifykey"
-"amlogic, vecm"
-"amlogic, aml_dummy_codec"
-"amlogic, aml_codec_T9015"
-"amlogic, g12a-sound-card"
-"amlogic, audiolocker"
-"operating-points-v2"
-"operating-points-v2"
-"operating-points-v2"
-"amlogic, cpufreq-meson"
+amlogic, g12a
+arm,malit60x
+arm,malit6xx
+arm,mali-midgard
+arm,cortex-a53
+arm,armv8
+arm,cortex-a53
+arm,armv8
+arm,cortex-a53
+arm,armv8
+arm,cortex-a53
+arm,armv8
+arm,idle-state
+arm,armv8-timer
+arm, meson-bc-timer
+arm,armv8-pmuv3
+arm,cortex-a15-gic
+arm,cortex-a9-gic
+arm,psci-0.2
+amlogic, pm
+amlogic, secmon
+aml, securitykey
+amlogic, meson_mhu
+amlogic, iomap
+fixed-clock
+amlogic, aml_vrtc
+amlogic, cpuinfo
+aml, reboot
+amlogic, vpu-g12a
+amlogic, g12a-eth-dwmac
+snps,dwmac
+amlogic,meson-g12a-aobus-pinctrl
+amlogic,meson-g12a-periphs-pinctrl
+amlogic, audio_data
+synopsys, dwc3
+amlogic, amlogic-new-usb2-v2
+amlogic, amlogic-new-usb3-v2
+amlogic, dwc2
+amlogic, meson-wdt
+amlogic, ram_dump
+amlogic, jtag
+amlogic,meson-g12a-saradc
+amlogic, r1p1-tsensor
+amlogic, r1p1-tsensor
+simple-bus
+simple-bus
+amlogic,meson-gpio-intc-ext
+amlogic,meson-g12a-gpio-intc
+amlogic, gxl_measure
+amlogic,g12a-ee-pwm
+amlogic,g12a-ee-pwm
+amlogic,g12a-ee-pwm
+amlogic,meson-g12a-i2c
+tlsc6x,tlsc6x_ts
+amlogic,meson-g12a-i2c
+amlogic,meson-g12a-i2c
+st,lis2dh12-accel
+amstaos,tmd2772
+amlogic,meson-g12a-i2c
+apple_mfi_auth
+amlogic,meson-g12a-spicc
+amlogic,meson-g12a-spicc
+simple-bus
+amlogic,g12a-aoclkc
+amlogic,g12a-ao-pwm
+amlogic,g12a-ao-pwm
+amlogic,meson-g12a-i2c
+amlogic, meson-i2c-slave
+amlogic, meson-uart
+amlogic, meson-uart
+amlogic, meson_irblaster
+simple-bus
+simple-bus
+amlogic,g12a-clkc
+amlogic, ion_dev
+amlogic, audio-controller
+simple-bus
+amlogic, g12a-audio-clocks
+amlogic, g12a-audio-ddr-manager
+amlogic, g12a-snd-tdma
+amlogic, g12a-snd-pdm
+amlogic, snd-loopback
+amlogic, g12a-resample
+amlogic, meson-uart
+amlogic, meson-uart
+amlogic, meson-uart
+amlogic, vdin
+amlogic, vdin
+amlogic, vout
+amlogic, vout2
+amlogic, vdac-g12a
+amlogic, meson, canvas
+amlogic, ge2d-g12a
+amlogic, amvideom
+amlogic, codec_io
+amlogic, codec, streambuf
+amlogic, vdec
+amlogic, vcodec-dec
+amlogic, amvenc_avc
+cnm, HevcEnc
+amlogic, meson, rdma
+amlogic, meson-g12a
+amlogic, meson-mmc-g12a
+amlogic, meson-cooldev
+amlogic, snd-iomap
+pwm-regulator
+amlogic, ddr-bandwidth
+amlogic, dmc_monitor
+amlogic, defendkey
+amlogic,aml_txlx_dma
+amlogic,aes_g12a_dma
+amlogic,sha_dma
+amlogic,tdes_dma
+amlogic,meson-rng
+amlogic, efuse
+amlogic, cpu-major-id-g12a
+android,firmware
+android,vbmeta
+android,fstab
+android,system
+amlogic, lcd-g12a
+amlogic, lcd_extern
+amlogic, backlight-g12a
+amlogic, bl_extern
+ramoops
+shared-dma-pool
+amlogic, aml_secos_memory
+shared-dma-pool
+shared-dma-pool
+shared-dma-pool
+shared-dma-pool
+shared-dma-pool
+amlogic, codec-mm-reserved
+shared-dma-pool
+gpio-leds
+gpio-keys-polled
+rotary-encoder
+generic-adc-thermal
+generic-adc-thermal
+generic-adc-thermal
+brcm,bcm4345c0
+amlogic, cvbsout-g12a
+amlogic, codec, mm
+amlogic, ppmgr
+amlogic, deinterlace
+amlogic, ionvideo
+amlogic, vm
+amlogic, unifykey
+amlogic, vecm
+amlogic, aml_dummy_codec
+amlogic, aml_codec_T9015
+amlogic, g12a-sound-card
+amlogic, audiolocker
+operating-points-v2
+operating-points-v2
+operating-points-v2
+amlogic, cpufreq-meson
